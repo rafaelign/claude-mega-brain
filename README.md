@@ -77,10 +77,12 @@ Real agentic sessions — not simulated.
 
 | metric | no context | Obsidian+MCP | **claude-mega-brain** |
 |---|--:|--:|--:|
-| accuracy | 67% | 17% | **100%** |
-| tool calls avg | 0.7 | 4.0 | **0** |
-| tokens avg | 42,519 | 175,461 | **16,025 (−91%)** |
-| latency avg ms | 9,508 | 17,298 | **3,543 (−80%)** |
+| accuracy | 67% | 17–83%* | **100%** |
+| tool calls avg | 0.7 | 0.7–4.0 | **0** |
+| tokens avg | 42,519 | 42k–175k | **16,025** |
+| latency avg ms | 9,508 | 8k–17k | **3,983** |
+
+\* Obsidian+MCP accuracy varies by run — the vault lacks exact schema values so the model oscillates between guessing (fast, unreliable) and exploring (slow, still misses). mega-brain is stable across runs.
 
 Obsidian+MCP makes 4 tool calls per question, reads the vault, and still misses — because prose notes lack exact schema values. claude-mega-brain injects structured OKF once at `SessionStart` and answers in a single turn with zero exploration.
 
