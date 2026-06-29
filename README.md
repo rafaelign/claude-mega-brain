@@ -4,8 +4,8 @@
 
 *Loads the lore. Skips the search.*
 
-[![Stars](https://img.shields.io/github/stars/your-username/claude-mega-brain?style=flat-square&color=111111&label=stars)](https://github.com/your-username/claude-mega-brain)
-[![Release](https://img.shields.io/github/v/release/your-username/claude-mega-brain?style=flat-square&color=111111&label=release)](https://github.com/your-username/claude-mega-brain/releases)
+[![Stars](https://img.shields.io/github/stars/guhcostan/claude-mega-brain?style=flat-square&color=111111&label=stars)](https://github.com/guhcostan/claude-mega-brain)
+[![Release](https://img.shields.io/github/v/release/guhcostan/claude-mega-brain?style=flat-square&color=111111&label=release)](https://github.com/guhcostan/claude-mega-brain/releases)
 [![License](https://img.shields.io/badge/license-MIT-111111?style=flat-square)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/works%20with-Claude%20Code-111111?style=flat-square)](https://github.com/anthropics/claude-code)
 
@@ -13,6 +13,28 @@
 
 Measured on knowledge-retrieval Q&A over a fictional schema, n=5, Claude Sonnet 4.6.
 Full details in [benchmarks/results/2026-06-29.md](benchmarks/results/2026-06-29.md).
+
+## Install
+
+```
+/plugin marketplace add guhcostan/claude-mega-brain
+/plugin install claude-mega-brain@guhcostan
+```
+
+Then create a knowledge base in any project:
+
+```bash
+mkdir okf/
+cat > okf/tables/orders.md << 'EOF'
+---
+type: BigQuery Table
+title: Orders
+description: One row per completed customer order.
+---
+EOF
+```
+
+Start a new Claude Code session — the lore is loaded automatically.
 
 ---
 
@@ -128,8 +150,8 @@ Types are freeform — add your own.
 ### Claude Code
 
 ```
-/plugin marketplace add your-username/claude-mega-brain
-/plugin install claude-mega-brain@your-username
+/plugin marketplace add guhcostan/claude-mega-brain
+/plugin install claude-mega-brain@guhcostan
 ```
 
 ### Local (development)
