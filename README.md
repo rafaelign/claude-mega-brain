@@ -72,13 +72,7 @@ Claude: amount_cents (INT64) — from tables/orders.md
 6 questions with project-specific values unknowable from training data.
 Real `claude -p` agentic sessions — not simulated.
 
-```mermaid
-xychart-beta
-  title "Accuracy by condition (%)"
-  x-axis ["No context", "Obsidian+MCP", "claude-mega-brain"]
-  y-axis "Accuracy (%)" 0 --> 100
-  bar [67, 17, 100]
-```
+![Benchmark chart](assets/benchmark.svg)
 
 | metric | no context | Obsidian+MCP | **claude-mega-brain** |
 |---|--:|--:|--:|
