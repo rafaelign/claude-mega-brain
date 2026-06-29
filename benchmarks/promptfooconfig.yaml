@@ -15,6 +15,11 @@ prompts:
   - file://prompts/baseline.txt
   - file://prompts/mega-brain.txt
 
+defaultTest:
+  assert:
+    - type: javascript
+      value: file://evaluators/token_usage.js
+
 tests:
   - description: "amount_cents — not guessable from training data"
     vars:
