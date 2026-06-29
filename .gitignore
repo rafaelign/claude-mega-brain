@@ -20,3 +20,6 @@ benchmarks/results/*.json
 # intermediate prompt files
 benchmarks/prompts/knowledge-query.txt
 benchmarks/prompts/knowledge-query-with-context.txt
+
+# local claude settings
+.claude/
