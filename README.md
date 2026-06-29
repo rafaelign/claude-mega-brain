@@ -254,6 +254,12 @@ Set `maxConcepts` in `.mega-brain.json`. The index stays compact; `index.md` hol
 
 ---
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=guhcostan/claude-mega-brain&type=Date)](https://star-history.com/#guhcostan/claude-mega-brain&Date)
+
+---
+
 ## License
 
 [MIT](LICENSE) — The shortest license that works.
