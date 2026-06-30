@@ -12,7 +12,7 @@
 [![License](https://img.shields.io/badge/license-MIT-111111?style=flat-square)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/works%20with-Claude%20Code-111111?style=flat-square)](https://github.com/anthropics/claude-code)
 
-**100% accuracy · 0 tool calls · −91% tokens vs Obsidian+MCP**
+**100% accuracy · 0 tool calls · −81% tokens vs Obsidian+MCP**
 
 Real agentic sessions. [Benchmark →](benchmarks/results/agentic-obsidian-vs-mega-brain.md)
 
@@ -75,16 +75,14 @@ Real agentic sessions — not simulated.
 
 ![Benchmark chart](assets/benchmark.svg)
 
-| metric | no context | Obsidian+MCP | **claude-mega-brain** |
-|---|--:|--:|--:|
-| accuracy | 67% | 17–83%* | **100%** |
-| tool calls avg | 0.7 | 0.7–4.0 | **0** |
-| tokens avg | 42,519 | 42k–175k | **16,025** |
-| latency avg ms | 9,508 | 8k–17k | **3,983** |
+| metric | no context | Obsidian+MCP | CLAUDE.md (raw files) | **claude-mega-brain** |
+|---|--:|--:|--:|--:|
+| accuracy | 83% | 83% | 83% | **100%** |
+| tool calls avg | 1.5 | 1.8 | 0 | **0** |
+| tokens avg | 76,511 | 84,731 | 16,551 | **16,526** |
+| latency avg ms | 10,026 | 10,578 | 4,746 | **4,114** |
 
-\* Obsidian+MCP accuracy varies by run — the vault lacks exact schema values so the model oscillates between guessing (fast, unreliable) and exploring (slow, still misses). mega-brain is stable across runs.
-
-Obsidian+MCP makes 4 tool calls per question, reads the vault, and still misses — because prose notes lack exact schema values. claude-mega-brain injects structured OKF once at `SessionStart` and answers in a single turn with zero exploration.
+CLAUDE.md (raw files) matches mega-brain on tool calls and tokens — but misses the question requiring structured navigation to locate exact schema values. mega-brain is the only condition to hit 100% accuracy.
 
 [Full results](benchmarks/results/agentic-obsidian-vs-mega-brain.md) · [Reproduce](benchmarks/)
 
@@ -117,13 +115,14 @@ No dedicated folder needed — documents can live anywhere in the project. When 
 
 ## How it compares
 
-| tool | auto-inject | schema enforcement | tool calls to answer |
-|------|-------------|-------------------|---------------------|
-| **claude-mega-brain** | ✓ SessionStart hook | required (`type:`) | **0** |
-| Obsidian + MCP | ✗ manual | none | 4+ |
-| Notion | ✗ manual | proprietary | N/A |
-| Logseq | ✗ plugin-based | none | N/A |
-| mem.ai | ✗ none | none | N/A |
+| tool | auto-inject | schema enforcement | tool calls to answer | accuracy |
+|------|-------------|-------------------|---------------------|---------|
+| **claude-mega-brain** | ✓ SessionStart hook | required (`type:`) | **0** | **100%** |
+| CLAUDE.md + additionalDirectories | manual setup | none | 0 | 83% |
+| Obsidian + MCP | ✗ manual | none | 4+ | 83% |
+| Notion | ✗ manual | proprietary | N/A | — |
+| Logseq | ✗ plugin-based | none | N/A | — |
+| mem.ai | ✗ none | none | N/A | — |
 
 ---
 
