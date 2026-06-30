@@ -36,6 +36,32 @@ Read index.md first, then follow links.
   log.md — 2026-06-29: added customers table
 </lore>"""
 
+CLAUDE_MD_CONTEXT = """The following project files have been loaded via additionalDirectories:
+
+--- index.md ---
+type: Index — Sales Knowledge Base
+Tables: orders (transaction records), customers (customer profiles)
+Metrics: wau (weekly active users), revenue (net revenue)
+Log: 2026-06-29 added customers table
+
+--- tables/orders.md ---
+BigQuery Table — one row per completed order.
+Columns: order_id STRING, customer_id STRING, created_at TIMESTAMP,
+  total_cents INT64 (order total before refunds), status STRING (pending/confirmed/shipped/done)
+Join to customers on customer_id.
+
+--- tables/customers.md ---
+BigQuery Table — one row per registered account.
+Columns: customer_id STRING, email STRING, country STRING, created_at TIMESTAMP
+
+--- metrics/wau.md ---
+Metric — COUNT(DISTINCT user_id) WHERE session_date >= CURRENT_DATE - 7
+Excludes email LIKE '%@acme.com'. Rolling 7-day window.
+
+--- metrics/revenue.md ---
+Metric — SUM(total_cents - refund_cents) / 100 WHERE status = 'done'
+Denominated in USD. Excludes test orders."""
+
 
 def run_claude(prompt, mcp_config_path=None, timeout=90):
     cmd = ["claude", "-p", prompt, "--output-format", "stream-json", "--verbose"]
@@ -92,9 +118,19 @@ def run_mega_brain(q):
     return run_claude(prompt)
 
 
+def run_claude_md(q):
+    prompt = f"{CLAUDE_MD_CONTEXT}\n\nAnswer using ONLY the project files above. Be concise.\n\n{q}"
+    return run_claude(prompt)
+
+
 def main():
     results = {}
-    for cond, runner in [("obsidian+MCP", run_obsidian), ("mega-brain", run_mega_brain)]:
+    for cond, runner in [
+        ("raw (no context)", lambda q: run_claude(q)),
+        ("obsidian+MCP", run_obsidian),
+        ("CLAUDE.md (raw files)", run_claude_md),
+        ("mega-brain (OKF)", run_mega_brain),
+    ]:
         print(f"\n=== {cond} ===")
         results[cond] = []
         for q in QUESTIONS:
@@ -109,20 +145,28 @@ def main():
             })
             print(f"{'✓' if correct else '✗'} tools={tool_calls} turns={turns} tokens={tokens} {latency}ms")
 
-    print("\n" + "="*60)
-    print(f"{'metric':<28} {'obsidian+MCP':>14} {'mega-brain':>14}")
-    print("-"*58)
-    for metric, key in [("accuracy", "correct"), ("tool calls avg", "tool_calls"), ("turns avg", "turns"), ("tokens avg", "tokens"), ("latency ms avg", "latency_ms")]:
+    CONDITIONS_ORDER = ["raw (no context)", "obsidian+MCP", "CLAUDE.md (raw files)", "mega-brain (OKF)"]
+    col_w = 20
+    print("\n" + "="*90)
+    print(f"{'metric':<24}" + "".join(f"{c:>{col_w}}" for c in CONDITIONS_ORDER))
+    print("-"*90)
+    for metric, key in [
+        ("accuracy", "correct"),
+        ("tool calls avg", "tool_calls"),
+        ("turns avg", "turns"),
+        ("tokens avg", "tokens"),
+        ("latency ms avg", "latency_ms"),
+    ]:
         row = []
-        for cond in ["obsidian+MCP", "mega-brain"]:
+        for cond in CONDITIONS_ORDER:
             vals = [r[key] for r in results[cond]]
             if key == "correct":
                 row.append(f"{sum(vals)/len(vals)*100:.0f}%")
             else:
                 row.append(f"{sum(vals)/len(vals):.1f}")
-        print(f"  {metric:<26} {row[0]:>14} {row[1]:>14}")
+        print(f"  {metric:<22}" + "".join(f"{v:>{col_w}}" for v in row))
 
-    out = "benchmarks/results/agentic-obsidian-vs-mega-brain.json"
+    out = "results/agentic-obsidian-vs-mega-brain.json"
     with open(out, "w") as f:
         json.dump(results, f, indent=2)
     print(f"\nSaved → {out}")

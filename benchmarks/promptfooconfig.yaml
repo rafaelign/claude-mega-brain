@@ -17,6 +17,7 @@ providers:
 prompts:
   - file://prompts/baseline.txt
   - file://prompts/obsidian-style.txt
+  - file://prompts/claude-md.txt
   - file://prompts/mega-brain.txt
 
 defaultTest:
